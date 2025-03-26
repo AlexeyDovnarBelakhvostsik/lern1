@@ -12,15 +12,11 @@ import java.util.List;
 @Getter
 @Data
 @Entity
-//Решение 5: Кеширование
-/* Плюсы:
-      Уменьшает количество запросов к БД после первого обращения.
-      Эффективно для часто читаемых данных.
-   Минусы:
-      Требует настройки кэша.
-      Не решает проблему полностью при первом обращении. */
 @Cacheable
-@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@org.hibernate.annotations.Cache(
+        usage = CacheConcurrencyStrategy.READ_WRITE,
+        region = "authorCache"
+)
 public class Author {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

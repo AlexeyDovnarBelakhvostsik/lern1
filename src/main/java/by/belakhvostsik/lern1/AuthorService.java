@@ -19,9 +19,10 @@ public class AuthorService {
         author1.addBook(new Book("Война и мир"));
         author1.addBook(new Book("Анна Каренина"));
 
+
         Author author2 = new Author("Фёдор Достоевский");
         author2.addBook(new Book("Преступление и наказание"));
-
+/*
         Author author3 = new Author("Николай Гоголь");
         author3.addBook(new Book("Мертвые души"));
 
@@ -48,8 +49,9 @@ public class AuthorService {
 
         Author author11 = new Author("Фёдор Тютчев");
         author11.addBook(new Book("Люблю грозу в начале мая"));
+ */
 
-        authorRepository.saveAll(List.of(author1, author2, author3, author4, author5, author6, author7, author8,author9,author10,author11));
+        authorRepository.saveAll(List.of(author1, author2 /*, author3, author4, author5, author6, author7, author8,author9,author10,author11*/));
     }
 
     @Transactional(readOnly = true)
@@ -102,6 +104,22 @@ public class AuthorService {
                     dto.getBookCount() + " книг(и)");
         });
 
+        System.out.printf("Выполнено за %d мс\n",
+                System.currentTimeMillis() - startTime);
+    }
+
+    @Transactional(readOnly = true)
+    public void demonstrateAuthorsWithBooks() {
+        System.out.println("\n=== Решение через кеширование ===");
+        long startTime = System.currentTimeMillis();
+
+        List<Author> authors = authorRepository.findAllAuthorsCache();
+        authors.forEach(author -> {
+            System.out.println(
+                    "Автор: " + author.getName() +
+                            ", Книг: " + author.getBooks().size()
+            );
+        });
         System.out.printf("Выполнено за %d мс\n",
                 System.currentTimeMillis() - startTime);
     }

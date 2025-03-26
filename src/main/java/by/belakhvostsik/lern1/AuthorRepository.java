@@ -43,4 +43,15 @@ public interface AuthorRepository extends JpaRepository<Author, Long> {
     SELECT a.name as authorName, COUNT(b.id) as bookCount FROM Author a LEFT JOIN a.books b GROUP BY a.id, a.name
     """)
     List<AuthorBookCountDTO> findAuthorsWithBookCount();
+
+
+    //Решение 5: Кеширование
+/* Плюсы:
+      Уменьшает количество запросов к БД после первого обращения.
+      Эффективно для часто читаемых данных.
+   Минусы:
+      Требует настройки кэша.
+      Не решает проблему полностью при первом обращении. */
+    @Query("SELECT a FROM Author a")
+    List<Author> findAllAuthorsCache();
 }

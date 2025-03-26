@@ -3,8 +3,10 @@ package by.belakhvostsik.lern1;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.annotation.EnableCaching;
 
 @SpringBootApplication
+@EnableCaching
 public class Lern1Application implements CommandLineRunner {
 
     private final AuthorService authorService;
@@ -23,5 +25,6 @@ public class Lern1Application implements CommandLineRunner {
         authorService.demonstrateJoinFetchSolution();//Решение 1
         authorService.demonstrateEntityGraphSolution();//Решение 2
         authorService.demonstrateDtoProjectionSolution();//Решение 4
+        authorService.demonstrateAuthorsWithBooks();//Решение 5
     }
 }

@@ -1,0 +1,13 @@
+<config xmlns="http://www.ehcache.org/v3">
+    <persistence directory="/tmp/ehcache-data"/> <!-- Директория для данных -->
+
+    <!-- Кэш для сущности Author -->
+    <cache alias="authorCache">
+        <key-type>java.lang.Long</key-type>
+        <value-type>com.example.entity.Author</value-type>
+        <expiry>
+            <tti unit="minutes">10</tti> <!-- Время жизни записи -->
+        </expiry>
+        <heap unit="entries">1000</heap> <!-- Максимальное количество записей -->
+    </cache>
+</config>
