@@ -2,11 +2,17 @@ package by.belakhvostsik.lern1;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Setter
 @Getter
-@Data
 @Entity
+@Cacheable
+@org.hibernate.annotations.Cache(
+        usage = CacheConcurrencyStrategy.READ_WRITE,
+        region = "bookCache"
+)
+@Data
 public class Book {
 
     @Id
@@ -14,7 +20,7 @@ public class Book {
     private Long id;
     private String title;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_id")
     private Author author;
 

@@ -4,10 +4,31 @@
     <!-- Кэш для сущности Author -->
     <cache alias="authorCache">
         <key-type>java.lang.Long</key-type>
-        <value-type>com.example.entity.Author</value-type>
+        <value-type>by.belakhvostsik.lern1.Author</value-type>
         <expiry>
             <tti unit="minutes">10</tti> <!-- Время жизни записи -->
         </expiry>
         <heap unit="entries">1000</heap> <!-- Максимальное количество записей -->
     </cache>
+
+    <!-- Кэш для сущности Book -->
+    <cache alias="bookCache">
+        <key-type>java.lang.Long</key-type>
+        <value-type>by.belakhvostsik.lern1.Book</value-type>
+        <expiry>
+            <tti unit="minutes">10</tti> <!-- Время жизни записи -->
+        </expiry>
+        <heap unit="entries">1000</heap> <!-- Максимальное количество записей -->
+    </cache>
+
+    <!-- Кэш для коллекции books в Author -->
+    <cache alias="by.belakhvostsik.lern1.Author.books">
+        <key-type>java.lang.Long</key-type>
+        <value-type>java.util.List</value-type>
+        <expiry>
+            <tti unit="minutes">10</tti> <!-- Время жизни записи -->
+        </expiry>
+        <heap unit="entries">1000</heap> <!-- Максимальное количество записей -->
+    </cache>
+
 </config>

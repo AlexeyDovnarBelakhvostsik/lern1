@@ -1,7 +1,15 @@
 package by.belakhvostsik.lern1;
 
 import jakarta.annotation.PostConstruct;
+import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
+
+import jakarta.persistence.EntityManager;
+import org.hibernate.SessionFactory;
+import org.hibernate.stat.Statistics;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,8 +20,12 @@ import java.util.List;
 public class AuthorService {
 
     private final AuthorRepository authorRepository;
+    @PersistenceContext
+    private EntityManager entityManager;
+    private static final Logger logger = LoggerFactory.getLogger(AuthorService.class);
 
     @PostConstruct
+    @Transactional
     public void initData() {
         Author author1 = new Author("Лев Толстой");
         author1.addBook(new Book("Война и мир"));
@@ -22,6 +34,7 @@ public class AuthorService {
 
         Author author2 = new Author("Фёдор Достоевский");
         author2.addBook(new Book("Преступление и наказание"));
+
 /*
         Author author3 = new Author("Николай Гоголь");
         author3.addBook(new Book("Мертвые души"));
@@ -53,6 +66,38 @@ public class AuthorService {
 
         authorRepository.saveAll(List.of(author1, author2 /*, author3, author4, author5, author6, author7, author8,author9,author10,author11*/));
     }
+
+    /**
+     * Демонстрирует работу кэша второго уровня Hibernate.
+     * Метод выполняет два чтения списка авторов из базы данных,
+     * чтобы показать, как кэш второго уровня позволяет избежать повторных запросов к базе данных.
+     * Второе чтение извлекает данные из кэша, что должно уменьшить количество SQL-запросов.
+     * В конце метод выводит статистику кэша, включая количество попаданий (hits),
+     * промахов (misses) и добавлений (puts) в кэш.
+     */
+    @Transactional(readOnly = true)
+    public void demonstrateSecondLevelCache() {
+        logger.info("\n ===> Первое чтение (Данные из БД) <===");
+        List<Author> authors1 = authorRepository.findAllAuthorsCache();
+        authors1.forEach(author -> logger.info("{} - {} книг", author.getName(), author.getBooks().size()));
+
+        logger.info("\n ===> Второе чтение (данные из кэша) <===");
+        List<Author> authors2 = authorRepository.findAllAuthorsCache();
+        authors2.forEach(author -> logger.info("{} - {} книг", author.getName(), author.getBooks().size()));
+
+        @SuppressWarnings("resource")
+        SessionFactory sessionFactory = entityManager.getEntityManagerFactory()
+                .unwrap(SessionFactory.class);
+
+        Statistics stats = sessionFactory.getStatistics();
+        logger.info("\n <=== Статистика кэша ===> ");
+        logger.info("Cache Hits: {}", stats.getSecondLevelCacheHitCount());
+        logger.info("Cache Misses: {}", stats.getSecondLevelCacheMissCount());
+        logger.info("Cache Puts: {}", stats.getSecondLevelCachePutCount());
+
+    }
+
+
 
     @Transactional(readOnly = true)
     public void demonstrateNPlusOneProblem() {
@@ -123,5 +168,4 @@ public class AuthorService {
         System.out.printf("Выполнено за %d мс\n",
                 System.currentTimeMillis() - startTime);
     }
-
 }
