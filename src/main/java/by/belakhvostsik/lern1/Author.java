@@ -10,19 +10,19 @@ import java.util.List;
 
 @Setter
 @Getter
-@Data
 @Entity
 @Cacheable
 @org.hibernate.annotations.Cache(
         usage = CacheConcurrencyStrategy.READ_WRITE,
         region = "authorCache"
 )
+
+@Data
 public class Author {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-
 
     public Author(String name) {
         this.name = name;
@@ -34,7 +34,11 @@ public class Author {
        Минусы:
           Всё равно выполняется несколько запросов (но меньше, чем N+1).*/
     @OneToMany(mappedBy = "author", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-   // @BatchSize(size = 5)
+    @org.hibernate.annotations.Cache(
+            usage = CacheConcurrencyStrategy.READ_WRITE,
+            region = "by.belakhvostsik.lern1.Author.books"
+    )
+    // @BatchSize(size = 5)
     private List<Book> books = new ArrayList<>();
 
     public Author() {

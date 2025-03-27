@@ -26,5 +26,6 @@ public class Lern1Application implements CommandLineRunner {
         authorService.demonstrateEntityGraphSolution();//Решение 2
         authorService.demonstrateDtoProjectionSolution();//Решение 4
         authorService.demonstrateAuthorsWithBooks();//Решение 5
+        authorService.demonstrateSecondLevelCache(); //Демонстрация работы кэша 2 уровня
     }
 }
